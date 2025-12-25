@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CSS Compressor Utility v3</title>
+    <style>
+        :root {
+            --bg:#fafafaff; --color:#000000DB; --muted:#00000099;
+            --border-color:rgb(197, 197, 197); --border: 1px solid var(--border-color); --border-radius:4px;
+            --surface: #eaeaea; --surface-border-color:#d0d0d0; --surface-border:1px solid var(--surface-border-color);
+            --card:#f0f0f0;             
+            --box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --font-family:Inter, system-ui, "Segoe UI Variable Display", "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+            --accent-bg:#0e6de0; --accent-color:#ffffff; 
+            --accent-hover:#0b5ab9; --accent-active:#0e6de0cc; 
+            --accent-border-color:#0b51a2; --accent-border:1px solid var(--accent-border-color);
+            --secondary-bg: transparent; --secondary-color:#00000099;
+            --secondary-hover:rgba(225, 225, 225, 0.5); --secondary-active:rgba(255, 255, 255, 0.5);
+            --secondary-border-color:#b0b0b0; --secondary-border:1px solid var(--secondary-border-color);
+            --error:#d32f2f; --warning:#f57c00; --success:#388e3c;
+            --control-padding-x:8px; --control-padding-y:4px;
+            --control-padding: var(--control-padding-y) var(--control-padding-x);
+        }
+        html, body { height:100vh; margin:0; font-family:var(--font-family); overflow: hidden; }
+        body { background:var(--bg); color:var(--color); display: flex; flex-direction: column; }
+        .wrap { 
+            flex: 1 1 100%; padding:20px; display: flex; flex-direction: column; 
+            gap:8px; overflow: hidden;
+        }
+        header { flex: 0 0 auto; display:flex; flex-direction: column; align-items:center; gap:4px; }
+        header h1 { font-size:18px; margin:0; }
+        textarea {
+            flex:1 1 auto; width:auto; height:300px; padding: var(--control-padding);
+            border-radius:var(--border-radius); border:1px solid var(--border-color);
+            background:var(--bg); color:var(--color); resize:vertical;
+            font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+            font-size:13px;
+        }
+        label { font-size:13px; color:var(--muted); }
+        select, input[type=number], input[type=checkbox] {
+            padding:var(--control-padding); border-radius:var(--border-radius);
+            border:1px solid var(--border-color); background:var(--bg); color:var(--color);
+        }
+        input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+        .btn {
+            background:var(--bg); color:var(--color); padding:var(--control-padding);
+            border-radius:var(--border-radius); border: var(--border);
+            cursor:pointer; transition: all 0.15s;
+        }
+        .btn:hover { background:var(--accent-hover); }
+        .btn:active { background:var(--accent-active); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn.btn--primary { background:var(--accent-bg); color:var(--accent-color); border: var(--accent-border) }
+        .btn.btn--primary:hover { background:var(--accent-hover); }
+        .btn.btn--primary:active { background:var(--accent-active); }
+        .btn.btn--secondary { background:transparent; border: var(--secondary-border); color:var(--muted);}
+        .btn.btn--secondary:hover { background: var(--secondary-hover); }
+        .btn.btn--secondary:active { background: var(--secondary-active); }
+        .btn.btn--secondary.active { background: var(--accent-bg); color: var(--accent-color); border-color: var(--accent-border-color); }
+        .card {
+            flex: 1 1 auto; display: flex; flex-direction:column; padding:14px;
+            background:var(--card); border-radius:var(--border-radius); 
+            border:1px solid var(--border-color); box-shadow:var(--box-shadow);
+        }
+        .row { flex: 1 1 auto; display:flex; gap:8px; margin-bottom: 4px; align-items: center; }
+        .row.space-between { justify-content: space-between; }
+        .row.align-right { justify-content: flex-end; }
+        .row.align-left { justify-content: flex-start; }
+        .output-panel { margin-top:8px; }
+        .meta { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+        footer { margin-top:14px; color:var(--muted); font-size:13px; }
+        .split { flex: 1 1 100%; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .split > section { display:flex; flex-direction:column; gap:0px; }
+        .panel { margin: 0; padding: 0; border: none; }
+        .panel > .panel-header { padding:0; margin: 0 0 4px 0; display: flex; flex-direction: row; }
+        .panel .panel-heading { flex: 1 1 auto; font-size:16px; font-weight: 500; }
+        .panel .panel-body { display:flex; flex-direction: column; gap:8px; }
+        @media (max-width:900px) { .split { grid-template-columns:1fr; } }
+        .small { font-size:12px; color:var(--muted); }
+        .pill { 
+            display:inline-block; padding:2px 8px; border-radius:12px; 
+            background:var(--surface); color:var(--muted); border: var(--surface-border);
+            font-size:12px;
+        }
+        .pill.error { background: var(--error); color: white; border-color: var(--error); }
+        .pill.warning { background: var(--warning); color: white; border-color: var(--warning); }
+        .pill.success { background: var(--success); color: white; border-color: var(--success); }
+        .hint { font-size:12px; color:var(--muted); margin-top:8px; }
+        .error-display { 
+            margin-top: 8px; padding: 8px; background: #ffebee; 
+            border: 1px solid var(--error); border-radius: var(--border-radius);
+            color: var(--error); font-size: 12px; display: none;
+        }
+        .error-display.show { display: block; }
+        .kbd { 
+            display: inline-block; padding: 2px 6px; 
+            background: var(--surface); border: var(--surface-border);
+            border-radius: 3px; font-family: monospace; font-size: 11px;
+        }
+        .icon { width:1em; height:1em; display:inline-block; vertical-align:middle; line-height: 1; position: relative; }
+        .icon::before {
+            content: ''; position: absolute; width:100%; height:100%; inset: 0;
+            background-repeat: no-repeat; background-position: center; background-size: contain;
+            pointer-events: none;
+        }
+        .icon--sm { width: 12px; height: 12px; }
+        .icon.icon-reverse-enter::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' aria-hidden='true' focusable='false'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 2 L2 8 L14 8'/><path d='M11 5 L14 8 L11 11'/></g></svg>");
+        }
+        .icon-copy::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='5' y='3' width='8' height='10' rx='2'/><rect x='3' y='5' width='8' height='8' rx='2'/></g></svg>");
+        }
+        .icon-paste::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='10' height='10' rx='2'/><path d='M8 6v4m0 0l-2-2m2 2l2-2'/></g></svg>");
+        }
+        .icon-download::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M8 3v7'/><path d='M5 8l3 3 3-3'/><rect x='3' y='13' width='10' height='1.5' rx='.75' fill='currentColor' stroke='none'/></g></svg>");
+        }
+        .icon-clear::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='8' cy='8' r='6.25'/><path d='M6 6l4 4M10 6l-4 4'/></g></svg>");
+        }
+        .icon-compress::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M5 5l-2 2m0-2v2h2'/><path d='M11 5l2 2m0-2v2h-2'/><path d='M5 11l-2-2m0 2v-2h2'/><path d='M11 11l2-2m0 2v-2h-2'/></g></svg>");
+        }
+        .icon-undo::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M3 8h8a3 3 0 0 1 0 6H8'/><path d='M6 5l-3 3 3 3'/></g></svg>");
+        }
+        .icon-redo::before {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M13 8H5a3 3 0 0 0 0 6h3'/><path d='M10 5l3 3-3 3'/></g></svg>");
+        }
+        .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; }
+        .progress-bar {
+            display: none; height: 3px; background: var(--accent-bg);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            animation: progress 1s ease-in-out infinite;
+        }
+        .progress-bar.show { display: block; }
+        @keyframes progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="wrap">
+        <header>
+            <h1>CSS Compressor Utility v3</h1>
+            <div class="small">Enhanced CSS formatter with proper comment handling and edge case support</div>
+        </header>
+
+        <div class="card">
+            <div class="split">
+                <section class="panel split-panel input-panel">
+                    <div class="panel-header">
+                        <div class="panel-heading">Input CSS</div>
+                        <div class="row align-right">
+                            <button class="btn btn--secondary small" id="undoBtn" disabled><span class="icon icon-undo"></span> Undo</button>
+                            <button class="btn btn--secondary small" id="redoBtn" disabled><span class="icon icon-redo"></span> Redo</button>
+                            <button class="btn btn--secondary small" id="pasteBtn"><span class="icon icon-paste"></span> Paste</button>
+                        </div>
+                    </div>
+                    <textarea id="inputCss" placeholder="Paste your CSS here...">/* Global styles */
+.button { display: inline-block; padding: 4px 8px; color: #ffffff; background: #0066cc; border-radius: 6px; }
+/* Card component */
+.card { padding: 16px; margin: 10px; border: 1px solid rgba(0,0,0,0.06); }
+@media (max-width:600px) {
+  /* Mobile adjustments */
+  .button{ padding: 6px 10px; }
+  .card{ padding: 8px; }
+}</textarea>
+
+                    <section style="margin-top:10px" class="panel">
+                        <div class="panel-header">
+                            <div class="panel-heading">Settings</div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="row space-between">
+                                <div class="row">
+                                    <select id="mode">
+                                        <option value="highest">Highest — minified</option>
+                                        <option value="high">High — one rule per line</option>
+                                        <option value="standard" selected>Standard — smart wrap</option>
+                                        <option value="low">Low — pretty print</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <label>Indent</label>
+                                    <input id="indent" type="number" min="0" max="8" value="4" style="width:50px" />
+                                </div>
+                                <div class="row">
+                                    <label>Breakpoint</label>
+                                    <input id="breakpoint" type="number" min="20" max="200" value="80" style="width:50px" />
+                                </div>
+                            </div>
+                            
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input id="softNewline" type="checkbox" checked />
+                                    <label for="softNewline">Soft newline</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input id="optimizeColors" type="checkbox" checked />
+                                    <label for="optimizeColors">Optimize colors</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input id="optimizeValues" type="checkbox" checked />
+                                    <label for="optimizeValues">Optimize values</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input id="sortProps" type="checkbox" />
+                                    <label for="sortProps">Sort properties</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input id="preserveComments" type="checkbox" />
+                                    <label for="preserveComments">Preserve /*! */ comments</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input id="autoCompress" type="checkbox" checked />
+                                    <label for="autoCompress">Auto-compress</label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="row align-left small">
+                                    <span class="icon icon-reverse-enter icon--lg"></span>
+                                    <i>Presets:</i>
+                                    <button class="btn btn--secondary" id="presetMinify">Minify</button>
+                                    <button class="btn btn--secondary" id="presetCompact">Compact</button>
+                                    <button class="btn btn--secondary active" id="presetStandard">Standard</button>
+                                    <button class="btn btn--secondary" id="presetReadable">Readable</button>
+                                </div>
+                                <div class="row align-right">
+                                    <button class="btn btn--secondary" id="clearBtn"><span class="icon icon-clear"></span> Clear</button>
+                                    <button class="btn btn--primary" id="compressBtn"><span class="icon icon-compress"></span> Compress</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="error-display" id="errorDisplay"></div>
+                </section>
+
+                <section class="panel split-panel output-panel">
+                    <div class="panel-header">
+                        <div class="panel-heading">Output CSS</div>
+                        <div class="row align-right">
+                            <button class="btn btn--secondary" id="copyBtn"> <span class="icon icon-copy"></span> Copy</button>
+                            <button class="btn btn--primary" id="downloadBtn"><span class="icon icon-download"></span> Download</button>
+                        </div>
+                    </div>
+                    <textarea id="outputCss" readonly></textarea>
+
+                    <div class="meta" style="margin-top:8px">
+                        <div class="small pill">Size: <span id="size">0</span> bytes</div>
+                        <div class="small pill">Lines: <span id="lines">0</span></div>
+                        <div class="small pill" id="savedPill">Saved: <span id="saved">0</span>%</div>
+                        <div class="small pill" id="warningPill" style="display:none;">Warnings: <span id="warnings">0</span></div>
+                    </div>
+                </section>
+            </div>
+
+            <footer>
+                <div class="hint">
+                    <strong>Keyboard shortcuts:</strong> 
+                    <span class="kbd">Ctrl+Enter</span> compress, 
+                    <span class="kbd">Ctrl+Z</span> undo, 
+                    <span class="kbd">Ctrl+Y</span> redo, 
+                    <span class="kbd">Ctrl+S</span> download (in output)
+                </div>
+                <div class="small" style="margin-top:8px">
+                    v3: Fixed comment handling, removed trailing semicolons, improved edge case support
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            modes: ['highest', 'high', 'standard', 'low'],
+            presets: {
+                minify: { mode: 'highest', indent: 0, breakpoint: 0, soft: false, optimizeColors: true, optimizeValues: true, sortProps: false },
+                compact: { mode: 'high', indent: 1, breakpoint: 100, soft: false, optimizeColors: true, optimizeValues: true, sortProps: false },
+                standard: { mode: 'standard', indent: 4, breakpoint: 80, soft: true, optimizeColors: true, optimizeValues: true, sortProps: false },
+                readable: { mode: 'low', indent: 4, breakpoint: 120, soft: true, optimizeColors: false, optimizeValues: false, sortProps: true }
+            },
+            debounceDelay: 500,
+            maxHistorySize: 50
+        };
+
+        const state = {
+            history: [],
+            historyIndex: -1,
+            currentPreset: 'standard',
+            processingLargeFile: false
+        };
+
+        const el = id => document.getElementById(id);
+
+        // ===== History Management =====
+        function saveToHistory(value) {
+            if (state.historyIndex < state.history.length - 1) {
+                state.history = state.history.slice(0, state.historyIndex + 1);
+            }
+            state.history.push(value);
+            if (state.history.length > CONFIG.maxHistorySize) {
+                state.history.shift();
+            } else {
+                state.historyIndex++;
+            }
+            updateHistoryButtons();
+        }
+
+        function undo() {
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                el('inputCss').value = state.history[state.historyIndex];
+                updateHistoryButtons();
+                compress();
+            }
+        }
+
+        function redo() {
+            if (state.historyIndex < state.history.length - 1) {
+                state.historyIndex++;
+                el('inputCss').value = state.history[state.historyIndex];
+                updateHistoryButtons();
+                compress();
+            }
+        }
+
+        function updateHistoryButtons() {
+            el('undoBtn').disabled = state.historyIndex <= 0;
+            el('redoBtn').disabled = state.historyIndex >= state.history.length - 1;
+        }
+
+        // ===== CSS Optimization =====
+        function optimizeColor(color) {
+            color = color.trim().toLowerCase();
+            
+            const rgbMatch = color.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+)?\s*\)$/);
+            if (rgbMatch) {
+                const [, r, g, b] = rgbMatch;
+                if (color.startsWith('rgba')) return color;
+                const hex = '#' + [r, g, b].map(x => {
+                    const h = parseInt(x).toString(16);
+                    return h.length === 1 ? '0' + h : h;
+                }).join('');
+                color = hex;
+            }
+            
+            if (/^#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3$/i.test(color)) {
+                color = '#' + color[1] + color[3] + color[5];
+            }
+            
+            return color;
+        }
+
+        function optimizeValue(value) {
+            value = value.replace(/\b0(?:px|em|rem|%|vh|vw|vmin|vmax|cm|mm|in|pt|pc|ch|ex)\b/g, '0');
+            value = value.replace(/\b0\.(\d+)/g, '.$1');
+            value = value.replace(/url\(["']([^"')]+)["']\)/g, 'url($1)');
+            
+            const parts = value.trim().split(/\s+/);
+            if (parts.length === 4 && parts[1] === parts[3]) {
+                if (parts[0] === parts[2]) {
+                    if (parts[0] === parts[1]) {
+                        value = parts[0];
+                    } else {
+                        value = parts[0] + ' ' + parts[1];
+                    }
+                } else {
+                    value = parts[0] + ' ' + parts[1] + ' ' + parts[2];
+                }
+            } else if (parts.length === 3 && parts[0] === parts[2]) {
+                value = parts[0] + ' ' + parts[1];
+            } else if (parts.length === 2 && parts[0] === parts[1]) {
+                value = parts[0];
+            }
+            return value;
+        }
+
+        const PROPERTY_ORDER = [
+            'content', 'position', 'top', 'right', 'bottom', 'left', 'z-index',
+            'display', 'flex', 'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content',
+            'grid', 'grid-template', 'gap', 'float', 'clear',
+            'width', 'height', 'min-width', 'min-height', 'max-width', 'max-height',
+            'margin', 'padding', 'border', 'border-radius',
+            'font', 'font-family', 'font-size', 'font-weight', 'line-height', 'text-align', 'color',
+            'background', 'opacity', 'box-shadow', 'transform', 'transition', 'animation'
+        ];
+
+        // ===== Comment Placeholder System =====
+        function replaceCommentsWithPlaceholders(css, preserveComments) {
+            const commentStore = [];
+            let index = 0;
+            
+            const processed = css.replace(/\/\*[\s\S]*?\*\//g, (match) => {
+                if (preserveComments) {
+                    const placeholder = `__COMMENT_${index}__`;
+                    commentStore.push({ placeholder, text: match });
+                    index++;
+                    return placeholder;
+                } else {
+                    return '';
+                }
+            });
+            
+            return { css: processed, commentStore };
+        }
+        
+        function restoreComments(css, commentStore) {
+            let result = css;
+            for (const { placeholder, text } of commentStore) {
+                result = result.replace(placeholder, text);
+            }
+            return result;
+        }
+
+        function sortProperties(decls) {
+            // Separate comments from declarations
+            const comments = decls.filter(d => d.type === 'comment');
+            const declarations = decls.filter(d => d.type === 'declaration');
+            
+            const sorted = declarations.sort((a, b) => {
+                const propA = a.prop || '';
+                const propB = b.prop || '';
+                const indexA = PROPERTY_ORDER.indexOf(propA);
+                const indexB = PROPERTY_ORDER.indexOf(propB);
+                
+                if (indexA === -1 && indexB === -1) return 0;
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+            });
+            
+            // Return sorted declarations with comments at the end
+            return [...sorted, ...comments];
+        }
+
+        // ===== Enhanced Tokenizer with Comment Preservation =====
+        function extractComments(css, preserveImportant) {
+            const comments = [];
+            const regex = /\/\*[\s\S]*?\*\//g;
+            let match;
+            
+            while ((match = regex.exec(css)) !== null) {
+                const text = match[0];
+                if (!preserveImportant || text.startsWith('/*!')) {
+                    comments.push({
+                        text: text,
+                        start: match.index,
+                        end: match.index + text.length,
+                        important: text.startsWith('/*!')
+                    });
+                }
+            }
+            
+            return comments;
+        }
+
+        function removeCommentsFromCSS(css, preserveImportant) {
+            if (preserveImportant) {
+                return css.replace(/\/\*[^!][\s\S]*?\*\//g, '');
+            }
+            return css.replace(/\/\*[\s\S]*?\*\//g, '');
+        }
+
+        function isInsideString(css, pos) {
+            let inString = false;
+            let stringChar = null;
+            let escaped = false;
+            
+            for (let i = 0; i < pos; i++) {
+                if (escaped) {
+                    escaped = false;
+                    continue;
+                }
+                if (css[i] === '\\') {
+                    escaped = true;
+                    continue;
+                }
+                if ((css[i] === '"' || css[i] === "'") && !inString) {
+                    inString = true;
+                    stringChar = css[i];
+                } else if (css[i] === stringChar && inString) {
+                    inString = false;
+                    stringChar = null;
+                }
+            }
+            return inString;
+        }
+
+        function tokenize(css) {
+            const tokens = [];
+            let i = 0;
+            const len = css.length;
+            
+            while (i < len) {
+                if (/\s/.test(css[i])) { i++; continue; }
+                
+                // Check for comment placeholder
+                if (css.slice(i).startsWith('__COMMENT_')) {
+                    const endIndex = css.indexOf('__', i + 10);
+                    if (endIndex !== -1) {
+                        const placeholder = css.slice(i, endIndex + 2);
+                        tokens.push({ type: 'comment', placeholder: placeholder });
+                        i = endIndex + 2;
+                        continue;
+                    }
+                }
+                
+                if (css[i] === '@') {
+                    let start = i;
+                    while (i < len && css[i] !== '{' && css[i] !== ';') i++;
+                    
+                    if (i < len && css[i] === ';') {
+                        tokens.push({ type: 'atRule', header: css.slice(start, i + 1).trim(), body: null });
+                        i++; 
+                        continue;
+                    }
+                    
+                    let header = css.slice(start, i).trim();
+                    if (css[i] === '{') {
+                        i++;
+                        let depth = 1;
+                        let bodyStart = i;
+                        
+                        while (i < len && depth > 0) {
+                            if (!isInsideString(css, i)) {
+                                if (css[i] === '{') depth++;
+                                else if (css[i] === '}') depth--;
+                            }
+                            i++;
+                        }
+                        
+                        let body = css.slice(bodyStart, i - 1);
+                        tokens.push({ type: 'atBlock', header: header, body: body });
+                        continue;
+                    }
+                }
+                
+                let selStart = i;
+                while (i < len && css[i] !== '{') i++;
+                if (i >= len) break;
+                
+                let selectors = css.slice(selStart, i).trim();
+                i++;
+                let depth = 1;
+                let bodyStart = i;
+                
+                while (i < len && depth > 0) {
+                    if (!isInsideString(css, i)) {
+                        if (css[i] === '{') depth++;
+                        else if (css[i] === '}') depth--;
+                    }
+                    i++;
+                }
+                
+                const body = css.slice(bodyStart, i - 1);
+                tokens.push({ type: 'rule', selector: selectors, body: body });
+            }
+            return tokens;
+        }
+
+        function splitDeclarations(body) {
+            const decls = [];
+            let cur = '';
+            let i = 0;
+            const len = body.length;
+            
+            while (i < len) {
+                if (/\s/.test(body[i])) {
+                    if (cur.trim()) cur += body[i];
+                    i++;
+                    continue;
+                }
+                
+                // Check for comment placeholder
+                if (body.slice(i).startsWith('__COMMENT_')) {
+                    const endIndex = body.indexOf('__', i + 10);
+                    if (endIndex !== -1) {
+                        const placeholder = body.slice(i, endIndex + 2);
+                        // Add comment as a separate "declaration"
+                        if (cur.trim()) {
+                            decls.push(cur.trim());
+                            cur = '';
+                        }
+                        decls.push(placeholder);
+                        i = endIndex + 2;
+                        continue;
+                    }
+                }
+                
+                if (body[i] === ';') {
+                    if (cur.trim()) {
+                        decls.push(cur.trim());
+                        cur = '';
+                    }
+                    i++;
+                    continue;
+                }
+                
+                if (body[i] === '(' && !isInsideString(body, i)) {
+                    cur += body[i];
+                    i++;
+                    let depth = 1;
+                    while (i < len && depth > 0) {
+                        if (body[i] === '(' && !isInsideString(body, i)) depth++;
+                        else if (body[i] === ')' && !isInsideString(body, i)) depth--;
+                        cur += body[i];
+                        i++;
+                    }
+                    continue;
+                }
+                
+                cur += body[i];
+                i++;
+            }
+            
+            if (cur.trim()) decls.push(cur.trim());
+            return decls.filter(d => d.length > 0);
+        }
+
+        function makeIndent(level, indentSize) {
+            return ' '.repeat(level * indentSize);
+        }
+
+        function softWrapDecls(decls, bp, indentLevel, indentSize) {
+            const lines = [];
+            let cur = '';
+            const baseIndent = makeIndent(indentLevel, indentSize);
+            
+            for (let i = 0; i < decls.length; i++) {
+                let part = decls[i];
+                if (!part) continue;
+                
+                if (cur === '') {
+                    cur = part;
+                } else if ((baseIndent + cur + ' ' + part).length <= bp) {
+                    cur = cur + ' ' + part;
+                } else {
+                    lines.push(cur);
+                    cur = part;
+                }
+            }
+            if (cur) lines.push(cur);
+            return lines.map(l => baseIndent + l);
+        }
+
+        function parseDeclaration(decl) {
+            // Check if this is a comment placeholder
+            if (decl.startsWith('__COMMENT_')) {
+                return { type: 'comment', placeholder: decl };
+            }
+            
+            const colonIndex = decl.indexOf(':');
+            if (colonIndex === -1) return null;
+            
+            const prop = decl.slice(0, colonIndex).trim();
+            let value = decl.slice(colonIndex + 1).trim();
+            
+            if (value.endsWith(';')) {
+                value = value.slice(0, -1).trim();
+            }
+            
+            return { type: 'declaration', prop, value };
+        }
+
+        function processDeclaration(parsed, options) {
+            if (!parsed) return null;
+            
+            // Pass through comments unchanged
+            if (parsed.type === 'comment') {
+                return parsed;
+            }
+            
+            let { prop, value } = parsed;
+            
+            if (options.optimizeColors) {
+                value = value.replace(/(#[0-9a-f]{3,6}|rgba?\([^)]+\))/gi, match => optimizeColor(match));
+            }
+            
+            if (options.optimizeValues) {
+                value = optimizeValue(value);
+            }
+            
+            return { type: 'declaration', prop, value };
+        }
+
+        function formatTokens(tokens, mode, opts, level = 0) {
+            const indentSize = Number(opts.indent) || 2;
+            const bp = Number(opts.breakpoint) || 80;
+            const soft = !!opts.soft;
+            const out = [];
+            
+            for (const t of tokens) {
+                // Handle comment tokens
+                if (t.type === 'comment') {
+                    if (mode === 'highest') {
+                        // In minified mode, skip comments on their own line
+                        continue;
+                    } else {
+                        out.push(makeIndent(level, indentSize) + t.placeholder);
+                        continue;
+                    }
+                }
+                
+                if (t.type === 'atRule') {
+                    out.push(t.header);
+                    continue;
+                }
+                
+                if (t.type === 'atBlock') {
+                    const innerTokens = tokenize(t.body);
+                    
+                    if (mode === 'highest') {
+                        const inner = formatTokens(innerTokens, mode, opts, level + 1).join('');
+                        const header = t.header.replace(/\s+/g, ' ');
+                        out.push(header + '{' + inner + '}');
+                    } else if (mode === 'high') {
+                        const header = t.header.replace(/\s+/g, ' ');
+                        const inner = formatTokens(innerTokens, mode, opts, level + 1).join('\n');
+                        out.push(header + ' {\n' + inner + '\n' + makeIndent(level, indentSize) + '}');
+                    } else {
+                        const inner = formatTokens(innerTokens, mode, opts, level + 1).join('\n');
+                        out.push(t.header + ' {\n' + inner + '\n' + makeIndent(level, indentSize) + '}');
+                    }
+                    continue;
+                }
+                
+                const selector = mode === 'highest' 
+                    ? t.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').replace(/\s*>\s*/g, '>').replace(/\s*\+\s*/g, '+').replace(/\s*~\s*/g, '~').trim()
+                    : t.selector.replace(/\s+/g, ' ').trim();
+                
+                let decls = splitDeclarations(t.body);
+                let parsed = decls.map(d => parseDeclaration(d)).filter(p => p !== null);
+                parsed = parsed.map(p => processDeclaration(p, opts)).filter(p => p !== null);
+                
+                if (opts.sortProps) {
+                    parsed = sortProperties(parsed);
+                }
+                
+                // Separate comments and declarations for formatting
+                const comments = parsed.filter(p => p.type === 'comment');
+                const declarations = parsed.filter(p => p.type === 'declaration');
+                const formatted = declarations.map(p => p.prop + ': ' + p.value);
+                
+                if (mode === 'highest') {
+                    const compacted = formatted.map(f => f.replace(/\s*:\s*/g, ':').replace(/\s+/g, ' '));
+                    const one = selector + '{' + compacted.join(';') + (compacted.length > 0 ? ';' : '') + '}';
+                    out.push(one);
+                } else if (mode === 'high') {
+                    // Output any comments first
+                    comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
+                    
+                    const joined = formatted.join('; ') + (formatted.length > 0 ? ';' : '');
+                    out.push(makeIndent(level, indentSize) + selector + ' { ' + joined + ' }');
+                } else if (mode === 'standard') {
+                    const withSemi = formatted.map(f => f + ';');
+                    const line = makeIndent(level, indentSize) + selector + ' { ' + withSemi.join(' ') + ' }';
+                    
+                    if (soft && line.length > bp) {
+                        // Output any comments first
+                        comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
+                        
+                        const wrapped = softWrapDecls(withSemi, bp, level + 1, indentSize);
+                        out.push(makeIndent(level, indentSize) + selector + ' {');
+                        out.push(...wrapped);
+                        out.push(makeIndent(level, indentSize) + '}');
+                    } else {
+                        // Output any comments first
+                        comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
+                        out.push(line);
+                    }
+                } else {
+                    // Output any comments first
+                    comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
+                    
+                    out.push(makeIndent(level, indentSize) + selector + ' {');
+                    for (const f of formatted) {
+                        out.push(makeIndent(level + 1, indentSize) + f + ';');
+                    }
+                    out.push(makeIndent(level, indentSize) + '}');
+                }
+            }
+            return out;
+        }
+
+        function validateCSS(css) {
+            const warnings = [];
+            
+            let braceCount = 0;
+            for (let i = 0; i < css.length; i++) {
+                if (!isInsideString(css, i)) {
+                    if (css[i] === '{') braceCount++;
+                    else if (css[i] === '}') braceCount--;
+                }
+            }
+            if (braceCount !== 0) {
+                warnings.push('Unmatched braces detected');
+            }
+            
+            if (/:\s*;/.test(css)) {
+                warnings.push('Empty property values detected');
+            }
+            
+            return warnings;
+        }
+
+        function compress() {
+            const raw = el('inputCss').value;
+            const mode = el('mode').value;
+            const indent = Number(el('indent').value) || 2;
+            const breakpoint = Number(el('breakpoint').value) || 80;
+            const soft = el('softNewline').checked;
+            const optimizeColors = el('optimizeColors').checked;
+            const optimizeValues = el('optimizeValues').checked;
+            const sortProps = el('sortProps').checked;
+            const preserveComments = el('preserveComments').checked;
+            
+            if (!raw.trim()) {
+                el('outputCss').value = '';
+                el('size').textContent = '0';
+                el('lines').textContent = '0';
+                el('saved').textContent = '0';
+                el('errorDisplay').classList.remove('show');
+                return;
+            }
+
+            if (raw.length > 50000) {
+                el('progressBar').classList.add('show');
+                state.processingLargeFile = true;
+            }
+
+            const process = () => {
+                try {
+                    let css = raw.replace(/\r\n/g, '\n');
+                    
+                    const warnings = validateCSS(css);
+                    if (warnings.length > 0) {
+                        el('warningPill').style.display = 'inline-block';
+                        el('warningPill').classList.add('warning');
+                        el('warnings').textContent = warnings.length;
+                        el('errorDisplay').textContent = '⚠️ ' + warnings.join(', ');
+                        el('errorDisplay').classList.add('show');
+                    } else {
+                        el('warningPill').style.display = 'none';
+                        el('errorDisplay').classList.remove('show');
+                    }
+                    
+                    // Replace comments with placeholders
+                    const { css: processedCss, commentStore } = replaceCommentsWithPlaceholders(css, preserveComments);
+                    
+                    const tokens = tokenize(processedCss);
+                    
+                    const options = { indent, breakpoint, soft, optimizeColors, optimizeValues, sortProps, preserveComments };
+                    let out = formatTokens(tokens, mode, options, 0).join('\n');
+                    
+                    if (mode === 'highest') {
+                        out = out.replace(/\n+/g, '');
+                    }
+                    
+                    // Restore comments from placeholders
+                    out = restoreComments(out, commentStore);
+
+                    el('outputCss').value = out;
+                    const outputSize = new Blob([out]).size;
+                    el('size').textContent = outputSize;
+                    el('lines').textContent = out.split('\n').length;
+                    const originalSize = new Blob([raw]).size;
+                    const saved = originalSize > 0 ? Math.round((1 - (outputSize / originalSize)) * 100) : 0;
+                    el('saved').textContent = saved;
+                    
+                    const savedPill = el('savedPill');
+                    savedPill.classList.remove('success', 'warning', 'error');
+                    if (saved > 30) savedPill.classList.add('success');
+                    else if (saved > 10) savedPill.classList.add('warning');
+                    
+                } catch (e) {
+                    el('outputCss').value = '/* Error formatting CSS: ' + (e && e.message ? e.message : String(e)) + ' */\n' + raw;
+                    el('errorDisplay').textContent = '❌ ' + (e && e.message ? e.message : String(e));
+                    el('errorDisplay').classList.add('show');
+                } finally {
+                    el('progressBar').classList.remove('show');
+                    state.processingLargeFile = false;
+                }
+            };
+
+            if (state.processingLargeFile) {
+                setTimeout(process, 50);
+            } else {
+                process();
+            }
+        }
+
+        function applyPreset(presetName) {
+            const preset = CONFIG.presets[presetName];
+            if (!preset) return;
+            
+            el('mode').value = preset.mode;
+            el('indent').value = preset.indent;
+            el('breakpoint').value = preset.breakpoint;
+            el('softNewline').checked = preset.soft;
+            el('optimizeColors').checked = preset.optimizeColors;
+            el('optimizeValues').checked = preset.optimizeValues;
+            el('sortProps').checked = preset.sortProps;
+            
+            state.currentPreset = presetName;
+            updatePresetButtons();
+            compress();
+        }
+
+        function updatePresetButtons() {
+            ['presetMinify', 'presetCompact', 'presetStandard', 'presetReadable'].forEach(id => {
+                el(id).classList.remove('active');
+            });
+            const presetMap = { minify: 'presetMinify', compact: 'presetCompact', standard: 'presetStandard', readable: 'presetReadable' };
+            if (presetMap[state.currentPreset]) {
+                el(presetMap[state.currentPreset]).classList.add('active');
+            }
+        }
+
+        async function pasteFromClipboard() {
+            const ta = el('inputCss');
+            if (!ta) return;
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text == null) {
+                    alert('Clipboard is empty or does not contain text.');
+                    return;
+                }
+                ta.value = text;
+                saveToHistory(text);
+                ta.selectionStart = ta.selectionEnd = ta.value.length;
+                ta.focus();
+                if (el('autoCompress').checked) {
+                    compress();
+                }
+            } catch (err) {
+                console.error('Failed to read clipboard:', err);
+                alert('Unable to read clipboard. Check permissions or use Ctrl+V.');
+            }
+        }
+        
+        async function copyToClipboard() {
+            const btn = el('copyBtn');
+            const text = el('outputCss').value;
+            try {
+                await navigator.clipboard.writeText(text);
+                const oldHTML = btn.innerHTML;
+                btn.innerHTML = '✓ Copied!';
+                btn.disabled = true;
+                setTimeout(() => { btn.innerHTML = oldHTML; btn.disabled = false; }, 1500);
+            } catch (err) {
+                el('outputCss').select();
+                document.execCommand('copy');
+            }
+        }
+
+        let debounceTimer;
+        el('inputCss').addEventListener('input', (e) => {
+            const value = e.target.value;
+            
+            if (Math.abs(value.length - (state.history[state.historyIndex] || '').length) > 10) {
+                saveToHistory(value);
+            }
+            
+            if (el('autoCompress').checked) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(compress, CONFIG.debounceDelay);
+            }
+        });
+
+        el('inputCss').addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                compress();
+            }
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            }
+            if (e.ctrlKey && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            }
+        });
+
+        el('outputCss').addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                downloadCSS();
+            }
+        });
+
+        el('compressBtn').addEventListener('click', compress);
+        el('clearBtn').addEventListener('click', () => {
+            el('inputCss').value = '';
+            el('outputCss').value = '';
+            el('size').textContent = '0';
+            el('lines').textContent = '0';
+            el('saved').textContent = '0';
+            el('errorDisplay').classList.remove('show');
+            saveToHistory('');
+        });
+
+        function downloadCSS() {
+            const blob = new Blob([el('outputCss').value], { type: 'text/css' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'styles.css';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        el('downloadBtn').addEventListener('click', downloadCSS);
+        el('copyBtn').addEventListener('click', copyToClipboard);
+        el('pasteBtn').addEventListener('click', pasteFromClipboard);
+        el('undoBtn').addEventListener('click', undo);
+        el('redoBtn').addEventListener('click', redo);
+        el('presetMinify').addEventListener('click', () => applyPreset('minify'));
+        el('presetCompact').addEventListener('click', () => applyPreset('compact'));
+        el('presetStandard').addEventListener('click', () => applyPreset('standard'));
+        el('presetReadable').addEventListener('click', () => applyPreset('readable'));
+
+        ['mode', 'indent', 'breakpoint', 'softNewline', 'optimizeColors', 'optimizeValues', 'sortProps', 'preserveComments'].forEach(id => {
+            el(id).addEventListener('change', () => {
+                state.currentPreset = null;
+                updatePresetButtons();
+                if (el('autoCompress').checked) {
+                    compress();
+                }
+            });
+        });
+
+        const initialValue = el('inputCss').value;
+        saveToHistory(initialValue);
+        compress();
+        updatePresetButtons();
+    </script>
+</body>
+</html>
