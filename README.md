@@ -8,7 +8,7 @@ A modern, feature-rich CSS compression and formatting tool built as a single HTM
 - **Multiple compression modes**: From minified to readable output
 - **Smart formatting**: Automatic line wrapping based on breakpoints
 - **Property optimization**: Color shortening, value optimization, and property sorting
-- **Comment preservation**: Option to preserve important comments (`/*! */`)
+- **Comment preservation**: Option to preserve important comments (`/* */`)
 
 ### 🎨 Output Modes
 - **Highest (Minified)**: Ultra-compressed single-line output
