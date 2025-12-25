@@ -54,7 +54,7 @@ A modern, feature-rich CSS compression and formatting tool built as a single HTM
 - **Optimize Colors**: Convert colors to shortest form (e.g., `#ffffff` → `#fff`)
 - **Optimize Values**: Simplify values (e.g., `0px` → `0`, `margin: 10px 20px 10px 20px` → `margin: 10px 20px`)
 - **Sort Properties**: Alphabetize CSS properties
-- **Preserve /*! */ Comments**: Keep important comments during compression
+- **Preserve /* */ Comments**: Keep important comments during compression
 - **Auto-compress**: Automatically compress on input changes
 
 #### Presets
