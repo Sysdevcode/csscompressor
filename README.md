@@ -1,4 +1,4 @@
-# CSS Compressor Utility v3
+# CSS Compressor Utility v4
 
 
 [CssCompressor](https://sysdevcode.github.io/csscompressor/ "Css Compressor V4")
@@ -96,12 +96,20 @@ The utility provides helpful feedback for:
 
 ## Version History
 
-### v3 Improvements
+### v4 Improvements
 - ✅ Fixed comment handling in all compression modes
 - ✅ Removed trailing semicolons in declarations
 - ✅ Improved edge case support for complex CSS
 - ✅ Enhanced property sorting with logical categories
 - ✅ Better handling of nested at-rules and media queries
+- ✅ Collision-safe comment placeholders
+- ✅ No trailing semicolon in minify
+- ✅ O(n) string scanner
+- ✅ @layer & @keyframes support
+- ✅ Per-rule error recovery
+- ✅ Gzip size estimate
+- ✅ rgba→hex for opaque
+- ✅ Custom property safety
 
 ## Project Structure
 The application is contained in a single HTML file with:
