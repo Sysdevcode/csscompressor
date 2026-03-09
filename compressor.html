@@ -1,154 +1,458 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>CSS Compressor Utility v3</title>
+    <title>CSS Compressor Utility v4</title>
     <style>
         :root {
-            --bg:#fafafaff; --color:#000000DB; --muted:#00000099;
-            --border-color:rgb(197, 197, 197); --border: 1px solid var(--border-color); --border-radius:4px;
-            --surface: #eaeaea; --surface-border-color:#d0d0d0; --surface-border:1px solid var(--surface-border-color);
-            --card:#f0f0f0;             
-            --box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            --font-family:Inter, system-ui, "Segoe UI Variable Display", "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
-            --accent-bg:#0e6de0; --accent-color:#ffffff; 
-            --accent-hover:#0b5ab9; --accent-active:#0e6de0cc; 
-            --accent-border-color:#0b51a2; --accent-border:1px solid var(--accent-border-color);
-            --secondary-bg: transparent; --secondary-color:#00000099;
-            --secondary-hover:rgba(225, 225, 225, 0.5); --secondary-active:rgba(255, 255, 255, 0.5);
-            --secondary-border-color:#b0b0b0; --secondary-border:1px solid var(--secondary-border-color);
-            --error:#d32f2f; --warning:#f57c00; --success:#388e3c;
-            --control-padding-x:8px; --control-padding-y:4px;
+            --bg: #fafafaff;
+            --color: #000000DB;
+            --muted: #00000099;
+            --border-color: rgb(197, 197, 197);
+            --border: 1px solid var(--border-color);
+            --border-radius: 4px;
+            --surface: #eaeaea;
+            --surface-border-color: #d0d0d0;
+            --surface-border: 1px solid var(--surface-border-color);
+            --card: #f0f0f0;
+            --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --font-family: Inter, system-ui, "Segoe UI Variable Display", "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+            --accent-bg: #0e6de0;
+            --accent-color: #ffffff;
+            --accent-hover: #0b5ab9;
+            --accent-active: #0e6de0cc;
+            --accent-border-color: #0b51a2;
+            --accent-border: 1px solid var(--accent-border-color);
+            --secondary-bg: transparent;
+            --secondary-color: #00000099;
+            --secondary-hover: rgba(225, 225, 225, 0.5);
+            --secondary-active: rgba(255, 255, 255, 0.5);
+            --secondary-border-color: #b0b0b0;
+            --secondary-border: 1px solid var(--secondary-border-color);
+            --error: #d32f2f;
+            --warning: #f57c00;
+            --success: #388e3c;
+            --control-padding-x: 8px;
+            --control-padding-y: 4px;
             --control-padding: var(--control-padding-y) var(--control-padding-x);
         }
-        html, body { height:100vh; margin:0; font-family:var(--font-family); overflow: hidden; }
-        body { background:var(--bg); color:var(--color); display: flex; flex-direction: column; }
-        .wrap { 
-            flex: 1 1 100%; padding:20px; display: flex; flex-direction: column; 
-            gap:8px; overflow: hidden;
+
+        html,
+        body {
+            height: 100vh;
+            margin: 0;
+            font-family: var(--font-family);
+            overflow: hidden;
         }
-        header { flex: 0 0 auto; display:flex; flex-direction: column; align-items:center; gap:4px; }
-        header h1 { font-size:18px; margin:0; }
+
+        body {
+            background: var(--bg);
+            color: var(--color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wrap {
+            flex: 1 1 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow: hidden;
+        }
+
+        header {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        header h1 {
+            font-size: 18px;
+            margin: 0;
+        }
+
         textarea {
-            flex:1 1 auto; width:auto; height:300px; padding: var(--control-padding);
-            border-radius:var(--border-radius); border:1px solid var(--border-color);
-            background:var(--bg); color:var(--color); resize:vertical;
-            font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-            font-size:13px;
+            flex: 1 1 auto;
+            width: auto;
+            height: 300px;
+            padding: var(--control-padding);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg);
+            color: var(--color);
+            resize: vertical;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+            font-size: 13px;
         }
-        label { font-size:13px; color:var(--muted); }
-        select, input[type=number], input[type=checkbox] {
-            padding:var(--control-padding); border-radius:var(--border-radius);
-            border:1px solid var(--border-color); background:var(--bg); color:var(--color);
+
+        label {
+            font-size: 13px;
+            color: var(--muted);
         }
-        input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+
+        select,
+        input[type=number],
+        input[type=checkbox] {
+            padding: var(--control-padding);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            background: var(--bg);
+            color: var(--color);
+        }
+
+        input[type=checkbox] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
         .btn {
-            background:var(--bg); color:var(--color); padding:var(--control-padding);
-            border-radius:var(--border-radius); border: var(--border);
-            cursor:pointer; transition: all 0.15s;
+            background: var(--bg);
+            color: var(--color);
+            padding: var(--control-padding);
+            border-radius: var(--border-radius);
+            border: var(--border);
+            cursor: pointer;
+            transition: all 0.15s;
         }
-        .btn:hover { background:var(--accent-hover); }
-        .btn:active { background:var(--accent-active); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn.btn--primary { background:var(--accent-bg); color:var(--accent-color); border: var(--accent-border) }
-        .btn.btn--primary:hover { background:var(--accent-hover); }
-        .btn.btn--primary:active { background:var(--accent-active); }
-        .btn.btn--secondary { background:transparent; border: var(--secondary-border); color:var(--muted);}
-        .btn.btn--secondary:hover { background: var(--secondary-hover); }
-        .btn.btn--secondary:active { background: var(--secondary-active); }
-        .btn.btn--secondary.active { background: var(--accent-bg); color: var(--accent-color); border-color: var(--accent-border-color); }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            color: white;
+        }
+
+        .btn:active {
+            background: var(--accent-active);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn.btn--primary {
+            background: var(--accent-bg);
+            color: var(--accent-color);
+            border: var(--accent-border)
+        }
+
+        .btn.btn--primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn.btn--primary:active {
+            background: var(--accent-active);
+        }
+
+        .btn.btn--secondary {
+            background: transparent;
+            border: var(--secondary-border);
+            color: var(--muted);
+        }
+
+        .btn.btn--secondary:hover {
+            background: var(--secondary-hover);
+            color: var(--color);
+        }
+
+        .btn.btn--secondary:active {
+            background: var(--secondary-active);
+        }
+
+        .btn.btn--secondary.active {
+            background: var(--accent-bg);
+            color: var(--accent-color);
+            border-color: var(--accent-border-color);
+        }
+
         .card {
-            flex: 1 1 auto; display: flex; flex-direction:column; padding:14px;
-            background:var(--card); border-radius:var(--border-radius); 
-            border:1px solid var(--border-color); box-shadow:var(--box-shadow);
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            padding: 14px;
+            background: var(--card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
         }
-        .row { flex: 1 1 auto; display:flex; gap:8px; margin-bottom: 4px; align-items: center; }
-        .row.space-between { justify-content: space-between; }
-        .row.align-right { justify-content: flex-end; }
-        .row.align-left { justify-content: flex-start; }
-        .output-panel { margin-top:8px; }
-        .meta { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
-        footer { margin-top:14px; color:var(--muted); font-size:13px; }
-        .split { flex: 1 1 100%; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-        .split > section { display:flex; flex-direction:column; gap:0px; }
-        .panel { margin: 0; padding: 0; border: none; }
-        .panel > .panel-header { padding:0; margin: 0 0 4px 0; display: flex; flex-direction: row; }
-        .panel .panel-heading { flex: 1 1 auto; font-size:16px; font-weight: 500; }
-        .panel .panel-body { display:flex; flex-direction: column; gap:8px; }
-        @media (max-width:900px) { .split { grid-template-columns:1fr; } }
-        .small { font-size:12px; color:var(--muted); }
-        .pill { 
-            display:inline-block; padding:2px 8px; border-radius:12px; 
-            background:var(--surface); color:var(--muted); border: var(--surface-border);
-            font-size:12px;
+
+        .row {
+            flex: 1 1 auto;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 4px;
+            align-items: center;
         }
-        .pill.error { background: var(--error); color: white; border-color: var(--error); }
-        .pill.warning { background: var(--warning); color: white; border-color: var(--warning); }
-        .pill.success { background: var(--success); color: white; border-color: var(--success); }
-        .hint { font-size:12px; color:var(--muted); margin-top:8px; }
-        .error-display { 
-            margin-top: 8px; padding: 8px; background: #ffebee; 
-            border: 1px solid var(--error); border-radius: var(--border-radius);
-            color: var(--error); font-size: 12px; display: none;
+
+        .row.space-between {
+            justify-content: space-between;
         }
-        .error-display.show { display: block; }
-        .kbd { 
-            display: inline-block; padding: 2px 6px; 
-            background: var(--surface); border: var(--surface-border);
-            border-radius: 3px; font-family: monospace; font-size: 11px;
+
+        .row.align-right {
+            justify-content: flex-end;
         }
-        .icon { width:1em; height:1em; display:inline-block; vertical-align:middle; line-height: 1; position: relative; }
+
+        .row.align-left {
+            justify-content: flex-start;
+        }
+
+        .output-panel {
+            margin-top: 8px;
+        }
+
+        .meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .split {
+            flex: 1 1 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .split>section {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+        }
+
+        .panel {
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .panel>.panel-header {
+            padding: 0;
+            margin: 0 0 4px 0;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .panel .panel-heading {
+            flex: 1 1 auto;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .panel .panel-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (max-width:900px) {
+            .split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .small {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--muted);
+            border: var(--surface-border);
+            font-size: 12px;
+        }
+
+        .pill.error {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
+        .pill.warning {
+            background: var(--warning);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        .pill.success {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .error-display {
+            margin-top: 8px;
+            padding: 8px;
+            background: #ffebee;
+            border: 1px solid var(--error);
+            border-radius: var(--border-radius);
+            color: var(--error);
+            font-size: 12px;
+            display: none;
+        }
+
+        .error-display.show {
+            display: block;
+        }
+
+        .warning-display {
+            margin-top: 8px;
+            padding: 8px;
+            background: #fff8e1;
+            border: 1px solid var(--warning);
+            border-radius: var(--border-radius);
+            color: var(--warning);
+            font-size: 12px;
+            display: none;
+        }
+
+        .warning-display.show {
+            display: block;
+        }
+
+        .kbd {
+            display: inline-block;
+            padding: 2px 6px;
+            background: var(--surface);
+            border: var(--surface-border);
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 11px;
+        }
+
+        .icon {
+            width: 1em;
+            height: 1em;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+            position: relative;
+        }
+
         .icon::before {
-            content: ''; position: absolute; width:100%; height:100%; inset: 0;
-            background-repeat: no-repeat; background-position: center; background-size: contain;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            inset: 0;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
             pointer-events: none;
         }
-        .icon--sm { width: 12px; height: 12px; }
+
+        .icon--sm {
+            width: 12px;
+            height: 12px;
+        }
+
         .icon.icon-reverse-enter::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' aria-hidden='true' focusable='false'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M2 2 L2 8 L14 8'/><path d='M11 5 L14 8 L11 11'/></g></svg>");
         }
+
         .icon-copy::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='5' y='3' width='8' height='10' rx='2'/><rect x='3' y='5' width='8' height='8' rx='2'/></g></svg>");
         }
+
         .icon-paste::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='10' height='10' rx='2'/><path d='M8 6v4m0 0l-2-2m2 2l2-2'/></g></svg>");
         }
+
         .icon-download::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M8 3v7'/><path d='M5 8l3 3 3-3'/><rect x='3' y='13' width='10' height='1.5' rx='.75' fill='currentColor' stroke='none'/></g></svg>");
         }
+
         .icon-clear::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><circle cx='8' cy='8' r='6.25'/><path d='M6 6l4 4M10 6l-4 4'/></g></svg>");
         }
+
         .icon-compress::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M5 5l-2 2m0-2v2h2'/><path d='M11 5l2 2m0-2v2h-2'/><path d='M5 11l-2-2m0 2v-2h2'/><path d='M11 11l2-2m0 2v-2h-2'/></g></svg>");
         }
+
         .icon-undo::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M3 8h8a3 3 0 0 1 0 6H8'/><path d='M6 5l-3 3 3 3'/></g></svg>");
         }
+
         .icon-redo::before {
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><g fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'><path d='M13 8H5a3 3 0 0 0 0 6h3'/><path d='M10 5l3 3-3 3'/></g></svg>");
         }
-        .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
-        .checkbox-item { display: flex; align-items: center; gap: 6px; }
+
+        .checkbox-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .progress-bar {
-            display: none; height: 3px; background: var(--accent-bg);
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            display: none;
+            height: 3px;
+            background: var(--accent-bg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
             animation: progress 1s ease-in-out infinite;
         }
-        .progress-bar.show { display: block; }
+
+        .progress-bar.show {
+            display: block;
+        }
+
         @keyframes progress {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .recovered-rules {
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--warning);
         }
     </style>
 </head>
+
 <body>
     <div class="progress-bar" id="progressBar"></div>
     <div class="wrap">
         <header>
-            <h1>CSS Compressor Utility v3</h1>
-            <div class="small">Enhanced CSS formatter with proper comment handling and edge case support</div>
+            <h1>CSS Compressor Utility v4</h1>
+            <div class="small">Enhanced CSS formatter — collision-safe placeholders, gzip estimate, @layer support,
+                per-rule error recovery</div>
         </header>
 
         <div class="card">
@@ -157,15 +461,27 @@
                     <div class="panel-header">
                         <div class="panel-heading">Input CSS</div>
                         <div class="row align-right">
-                            <button class="btn btn--secondary small" id="undoBtn" disabled><span class="icon icon-undo"></span> Undo</button>
-                            <button class="btn btn--secondary small" id="redoBtn" disabled><span class="icon icon-redo"></span> Redo</button>
-                            <button class="btn btn--secondary small" id="pasteBtn"><span class="icon icon-paste"></span> Paste</button>
+                            <button class="btn btn--secondary small" id="undoBtn" disabled><span
+                                    class="icon icon-undo"></span> Undo</button>
+                            <button class="btn btn--secondary small" id="redoBtn" disabled><span
+                                    class="icon icon-redo"></span> Redo</button>
+                            <button class="btn btn--secondary small" id="pasteBtn"><span class="icon icon-paste"></span>
+                                Paste</button>
                         </div>
                     </div>
                     <textarea id="inputCss" placeholder="Paste your CSS here...">/* Global styles */
 .button { display: inline-block; padding: 4px 8px; color: #ffffff; background: #0066cc; border-radius: 6px; }
 /* Card component */
 .card { padding: 16px; margin: 10px; border: 1px solid rgba(0,0,0,0.06); }
+
+/* @layer example */
+@layer base {
+  body { margin: 0px; padding: 0px; color: #333333; }
+}
+@layer components {
+  .btn { display: inline-flex; align-items: center; gap: 8px; }
+}
+
 @media (max-width:600px) {
   /* Mobile adjustments */
   .button{ padding: 6px 10px; }
@@ -193,10 +509,11 @@
                                 </div>
                                 <div class="row">
                                     <label>Breakpoint</label>
-                                    <input id="breakpoint" type="number" min="20" max="200" value="80" style="width:50px" />
+                                    <input id="breakpoint" type="number" min="20" max="200" value="80"
+                                        style="width:50px" />
                                 </div>
                             </div>
-                            
+
                             <div class="checkbox-group">
                                 <div class="checkbox-item">
                                     <input id="softNewline" type="checkbox" checked />
@@ -234,13 +551,16 @@
                                     <button class="btn btn--secondary" id="presetReadable">Readable</button>
                                 </div>
                                 <div class="row align-right">
-                                    <button class="btn btn--secondary" id="clearBtn"><span class="icon icon-clear"></span> Clear</button>
-                                    <button class="btn btn--primary" id="compressBtn"><span class="icon icon-compress"></span> Compress</button>
+                                    <button class="btn btn--secondary" id="clearBtn"><span
+                                            class="icon icon-clear"></span> Clear</button>
+                                    <button class="btn btn--primary" id="compressBtn"><span
+                                            class="icon icon-compress"></span> Compress</button>
                                 </div>
                             </div>
                         </div>
                     </section>
 
+                    <div class="warning-display" id="warningDisplay"></div>
                     <div class="error-display" id="errorDisplay"></div>
                 </section>
 
@@ -248,31 +568,40 @@
                     <div class="panel-header">
                         <div class="panel-heading">Output CSS</div>
                         <div class="row align-right">
-                            <button class="btn btn--secondary" id="copyBtn"> <span class="icon icon-copy"></span> Copy</button>
-                            <button class="btn btn--primary" id="downloadBtn"><span class="icon icon-download"></span> Download</button>
+                            <button class="btn btn--secondary" id="copyBtn"> <span class="icon icon-copy"></span>
+                                Copy</button>
+                            <button class="btn btn--primary" id="downloadBtn"><span class="icon icon-download"></span>
+                                Download</button>
                         </div>
                     </div>
                     <textarea id="outputCss" readonly></textarea>
 
                     <div class="meta" style="margin-top:8px">
                         <div class="small pill">Size: <span id="size">0</span> bytes</div>
+                        <div class="small pill">Gzip ~<span id="gzipSize">0</span> bytes</div>
                         <div class="small pill">Lines: <span id="lines">0</span></div>
                         <div class="small pill" id="savedPill">Saved: <span id="saved">0</span>%</div>
-                        <div class="small pill" id="warningPill" style="display:none;">Warnings: <span id="warnings">0</span></div>
+                        <div class="small pill" id="warningPill" style="display:none;">Warnings: <span
+                                id="warnings">0</span></div>
+                        <div class="small pill" id="recoveredPill" style="display:none;"
+                            title="Rules that failed to parse and were passed through as-is">Recovered: <span
+                                id="recovered">0</span></div>
                     </div>
                 </section>
             </div>
 
             <footer>
                 <div class="hint">
-                    <strong>Keyboard shortcuts:</strong> 
-                    <span class="kbd">Ctrl+Enter</span> compress, 
-                    <span class="kbd">Ctrl+Z</span> undo, 
-                    <span class="kbd">Ctrl+Y</span> redo, 
+                    <strong>Keyboard shortcuts:</strong>
+                    <span class="kbd">Ctrl+Enter</span> compress,
+                    <span class="kbd">Ctrl+Z</span> undo,
+                    <span class="kbd">Ctrl+Y</span> redo,
                     <span class="kbd">Ctrl+S</span> download (in output)
                 </div>
                 <div class="small" style="margin-top:8px">
-                    v3: Fixed comment handling, removed trailing semicolons, improved edge case support
+                    v4: Collision-safe comment placeholders · No trailing semicolon in minify · O(n) string scanner ·
+                    @layer &amp; @keyframes support · Per-rule error recovery · Gzip size estimate · rgba→hex for opaque
+                    · Custom property safety
                 </div>
             </footer>
         </div>
@@ -295,7 +624,8 @@
             history: [],
             historyIndex: -1,
             currentPreset: 'standard',
-            processingLargeFile: false
+            processingLargeFile: false,
+            recoveredCount: 0
         };
 
         const el = id => document.getElementById(id);
@@ -305,6 +635,8 @@
             if (state.historyIndex < state.history.length - 1) {
                 state.history = state.history.slice(0, state.historyIndex + 1);
             }
+            // Avoid duplicate consecutive entries
+            if (state.history[state.historyIndex] === value) return;
             state.history.push(value);
             if (state.history.length > CONFIG.maxHistorySize) {
                 state.history.shift();
@@ -337,41 +669,121 @@
             el('redoBtn').disabled = state.historyIndex >= state.history.length - 1;
         }
 
-        // ===== CSS Optimization =====
+        // ===== O(n) Stateful String Scanner =====
+        // Returns an array of booleans: isInString[i] = true if position i is inside a string literal.
+        function buildStringMap(css) {
+            const map = new Uint8Array(css.length);
+            let inString = false;
+            let stringChar = null;
+            let escaped = false;
+
+            for (let i = 0; i < css.length; i++) {
+                if (escaped) {
+                    map[i] = inString ? 1 : 0;
+                    escaped = false;
+                    continue;
+                }
+                if (css[i] === '\\') {
+                    map[i] = inString ? 1 : 0;
+                    escaped = true;
+                    continue;
+                }
+                if ((css[i] === '"' || css[i] === "'") && !inString) {
+                    inString = true;
+                    stringChar = css[i];
+                    map[i] = 1;
+                    continue;
+                }
+                if (css[i] === stringChar && inString) {
+                    inString = false;
+                    map[i] = 1;
+                    stringChar = null;
+                    continue;
+                }
+                map[i] = inString ? 1 : 0;
+            }
+            return map;
+        }
+
+        // ===== Gzip Size Estimator =====
+        // Uses CompressionStream if available, otherwise falls back to a heuristic.
+        async function estimateGzipSize(text) {
+            if (typeof CompressionStream !== 'undefined') {
+                try {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(text);
+                    const cs = new CompressionStream('gzip');
+                    const writer = cs.writable.getWriter();
+                    writer.write(data);
+                    writer.close();
+                    const chunks = [];
+                    const reader = cs.readable.getReader();
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        chunks.push(value);
+                    }
+                    let total = 0;
+                    for (const c of chunks) total += c.length;
+                    return total;
+                } catch (e) {
+                    // fall through to heuristic
+                }
+            }
+            // Heuristic: CSS gzips to roughly 25–35% of raw size
+            return Math.round(new Blob([text]).size * 0.28);
+        }
+
+        // ===== CSS Color Optimization =====
         function optimizeColor(color) {
             color = color.trim().toLowerCase();
-            
-            const rgbMatch = color.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+)?\s*\)$/);
+
+            // rgb() → hex
+            const rgbMatch = color.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/);
             if (rgbMatch) {
                 const [, r, g, b] = rgbMatch;
-                if (color.startsWith('rgba')) return color;
                 const hex = '#' + [r, g, b].map(x => {
                     const h = parseInt(x).toString(16);
                     return h.length === 1 ? '0' + h : h;
                 }).join('');
                 color = hex;
             }
-            
-            if (/^#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3$/i.test(color)) {
+
+            // rgba() with alpha=1 → hex (FIX: was skipping all rgba)
+            const rgbaMatch = color.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)$/);
+            if (rgbaMatch) {
+                const [, r, g, b, a] = rgbaMatch;
+                if (parseFloat(a) === 1) {
+                    const hex = '#' + [r, g, b].map(x => {
+                        const h = parseInt(x).toString(16);
+                        return h.length === 1 ? '0' + h : h;
+                    }).join('');
+                    color = hex;
+                } else {
+                    return color; // keep rgba with real alpha
+                }
+            }
+
+            // #rrggbb → #rgb where possible
+            if (/^#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3$/.test(color)) {
                 color = '#' + color[1] + color[3] + color[5];
             }
-            
+
             return color;
         }
 
-        function optimizeValue(value) {
+        function optimizeValue(prop, value) {
+            // FIX: Don't optimize custom property values — semantics differ
+            if (prop && prop.startsWith('--')) return value;
+
             value = value.replace(/\b0(?:px|em|rem|%|vh|vw|vmin|vmax|cm|mm|in|pt|pc|ch|ex)\b/g, '0');
             value = value.replace(/\b0\.(\d+)/g, '.$1');
             value = value.replace(/url\(["']([^"')]+)["']\)/g, 'url($1)');
-            
+
             const parts = value.trim().split(/\s+/);
             if (parts.length === 4 && parts[1] === parts[3]) {
                 if (parts[0] === parts[2]) {
-                    if (parts[0] === parts[1]) {
-                        value = parts[0];
-                    } else {
-                        value = parts[0] + ' ' + parts[1];
-                    }
+                    value = parts[0] === parts[1] ? parts[0] : parts[0] + ' ' + parts[1];
                 } else {
                     value = parts[0] + ' ' + parts[1] + ' ' + parts[2];
                 }
@@ -393,234 +805,199 @@
             'background', 'opacity', 'box-shadow', 'transform', 'transition', 'animation'
         ];
 
-        // ===== Comment Placeholder System =====
+        // ===== Collision-Safe Comment Placeholder System =====
+        // FIX: Use a per-session nonce + null-byte prefix so placeholders can never
+        // collide with real CSS content (null bytes are invalid in CSS).
+        function makePlaceholderKey() {
+            return '\x00CSS_CMT_' + Math.random().toString(36).slice(2) + '_';
+        }
+
         function replaceCommentsWithPlaceholders(css, preserveComments) {
             const commentStore = [];
+            const key = makePlaceholderKey();
             let index = 0;
-            
+
             const processed = css.replace(/\/\*[\s\S]*?\*\//g, (match) => {
-                if (preserveComments) {
-                    const placeholder = `__COMMENT_${index}__`;
-                    commentStore.push({ placeholder, text: match });
+                if (preserveComments || match.startsWith('/*!')) {
+                    const placeholder = key + index + '\x00';
+                    commentStore.push({ placeholder, text: match, important: match.startsWith('/*!') });
                     index++;
                     return placeholder;
-                } else {
-                    return '';
                 }
+                return '';
             });
-            
-            return { css: processed, commentStore };
+
+            return { css: processed, commentStore, key };
         }
-        
+
         function restoreComments(css, commentStore) {
             let result = css;
             for (const { placeholder, text } of commentStore) {
-                result = result.replace(placeholder, text);
+                // Escape the placeholder for use in a RegExp
+                const escaped = placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                result = result.replace(new RegExp(escaped, 'g'), text);
             }
             return result;
         }
 
         function sortProperties(decls) {
-            // Separate comments from declarations
             const comments = decls.filter(d => d.type === 'comment');
             const declarations = decls.filter(d => d.type === 'declaration');
-            
             const sorted = declarations.sort((a, b) => {
-                const propA = a.prop || '';
-                const propB = b.prop || '';
-                const indexA = PROPERTY_ORDER.indexOf(propA);
-                const indexB = PROPERTY_ORDER.indexOf(propB);
-                
-                if (indexA === -1 && indexB === -1) return 0;
-                if (indexA === -1) return 1;
-                if (indexB === -1) return -1;
-                return indexA - indexB;
+                const ia = PROPERTY_ORDER.indexOf(a.prop || '');
+                const ib = PROPERTY_ORDER.indexOf(b.prop || '');
+                if (ia === -1 && ib === -1) return 0;
+                if (ia === -1) return 1;
+                if (ib === -1) return -1;
+                return ia - ib;
             });
-            
-            // Return sorted declarations with comments at the end
             return [...sorted, ...comments];
         }
 
-        // ===== Enhanced Tokenizer with Comment Preservation =====
-        function extractComments(css, preserveImportant) {
-            const comments = [];
-            const regex = /\/\*[\s\S]*?\*\//g;
-            let match;
-            
-            while ((match = regex.exec(css)) !== null) {
-                const text = match[0];
-                if (!preserveImportant || text.startsWith('/*!')) {
-                    comments.push({
-                        text: text,
-                        start: match.index,
-                        end: match.index + text.length,
-                        important: text.startsWith('/*!')
-                    });
-                }
-            }
-            
-            return comments;
+        // ===== Tokenizer =====
+        // Detects whether a position is a placeholder start using the nonce key.
+        function isPlaceholder(css, i, key) {
+            return css[i] === '\x00' && css.slice(i, i + key.length) === key;
         }
 
-        function removeCommentsFromCSS(css, preserveImportant) {
-            if (preserveImportant) {
-                return css.replace(/\/\*[^!][\s\S]*?\*\//g, '');
-            }
-            return css.replace(/\/\*[\s\S]*?\*\//g, '');
-        }
-
-        function isInsideString(css, pos) {
-            let inString = false;
-            let stringChar = null;
-            let escaped = false;
-            
-            for (let i = 0; i < pos; i++) {
-                if (escaped) {
-                    escaped = false;
-                    continue;
-                }
-                if (css[i] === '\\') {
-                    escaped = true;
-                    continue;
-                }
-                if ((css[i] === '"' || css[i] === "'") && !inString) {
-                    inString = true;
-                    stringChar = css[i];
-                } else if (css[i] === stringChar && inString) {
-                    inString = false;
-                    stringChar = null;
-                }
-            }
-            return inString;
-        }
-
-        function tokenize(css) {
+        function tokenize(css, key, stringMap) {
+            // Build string map if not provided (recursive calls for nested blocks)
+            if (!stringMap) stringMap = buildStringMap(css);
             const tokens = [];
             let i = 0;
             const len = css.length;
-            
+
             while (i < len) {
+                // Skip whitespace
                 if (/\s/.test(css[i])) { i++; continue; }
-                
-                // Check for comment placeholder
-                if (css.slice(i).startsWith('__COMMENT_')) {
-                    const endIndex = css.indexOf('__', i + 10);
-                    if (endIndex !== -1) {
-                        const placeholder = css.slice(i, endIndex + 2);
-                        tokens.push({ type: 'comment', placeholder: placeholder });
-                        i = endIndex + 2;
+
+                // Comment placeholder
+                if (key && isPlaceholder(css, i, key)) {
+                    const end = css.indexOf('\x00', i + key.length);
+                    if (end !== -1) {
+                        tokens.push({ type: 'comment', placeholder: css.slice(i, end + 1) });
+                        i = end + 1;
                         continue;
                     }
                 }
-                
+
+                // At-rules
                 if (css[i] === '@') {
                     let start = i;
+                    // Advance until { or ;, skipping strings
                     while (i < len && css[i] !== '{' && css[i] !== ';') i++;
-                    
+
                     if (i < len && css[i] === ';') {
                         tokens.push({ type: 'atRule', header: css.slice(start, i + 1).trim(), body: null });
-                        i++; 
+                        i++;
                         continue;
                     }
-                    
-                    let header = css.slice(start, i).trim();
+
+                    const header = css.slice(start, i).trim();
                     if (css[i] === '{') {
                         i++;
                         let depth = 1;
-                        let bodyStart = i;
-                        
+                        const bodyStart = i;
                         while (i < len && depth > 0) {
-                            if (!isInsideString(css, i)) {
+                            if (!stringMap[i]) {
                                 if (css[i] === '{') depth++;
                                 else if (css[i] === '}') depth--;
                             }
                             i++;
                         }
-                        
-                        let body = css.slice(bodyStart, i - 1);
-                        tokens.push({ type: 'atBlock', header: header, body: body });
+                        const body = css.slice(bodyStart, i - 1);
+
+                        // Determine at-block type
+                        const headerLC = header.toLowerCase();
+                        // @keyframes blocks contain keyframe selectors (from/to/%), not standard rules
+                        const isKeyframes = /^@(?:-\w+-)?keyframes/.test(headerLC);
+                        // @layer, @media, @supports, @container contain standard rules
+                        const isRuleContainer = /^@(?:media|supports|layer|container|document|-\w+-\w+)/.test(headerLC);
+
+                        tokens.push({
+                            type: isKeyframes ? 'keyframes' : 'atBlock',
+                            header,
+                            body
+                        });
                         continue;
                     }
                 }
-                
-                let selStart = i;
-                while (i < len && css[i] !== '{') i++;
+
+                // Standard rule: scan selector up to {
+                const selStart = i;
+                while (i < len && (stringMap[i] || css[i] !== '{')) i++;
                 if (i >= len) break;
-                
-                let selectors = css.slice(selStart, i).trim();
-                i++;
+
+                const selectors = css.slice(selStart, i).trim();
+                if (!selectors) { i++; continue; } // skip empty
+
+                i++; // skip {
                 let depth = 1;
-                let bodyStart = i;
-                
+                const bodyStart = i;
                 while (i < len && depth > 0) {
-                    if (!isInsideString(css, i)) {
+                    if (!stringMap[i]) {
                         if (css[i] === '{') depth++;
                         else if (css[i] === '}') depth--;
                     }
                     i++;
                 }
-                
                 const body = css.slice(bodyStart, i - 1);
-                tokens.push({ type: 'rule', selector: selectors, body: body });
+                tokens.push({ type: 'rule', selector: selectors, body });
             }
             return tokens;
         }
 
-        function splitDeclarations(body) {
+        function splitDeclarations(body, key) {
             const decls = [];
             let cur = '';
             let i = 0;
             const len = body.length;
-            
+            const sm = buildStringMap(body);
+
             while (i < len) {
+                // Skip leading whitespace, but preserve internal
                 if (/\s/.test(body[i])) {
                     if (cur.trim()) cur += body[i];
                     i++;
                     continue;
                 }
-                
-                // Check for comment placeholder
-                if (body.slice(i).startsWith('__COMMENT_')) {
-                    const endIndex = body.indexOf('__', i + 10);
-                    if (endIndex !== -1) {
-                        const placeholder = body.slice(i, endIndex + 2);
-                        // Add comment as a separate "declaration"
-                        if (cur.trim()) {
-                            decls.push(cur.trim());
-                            cur = '';
-                        }
-                        decls.push(placeholder);
-                        i = endIndex + 2;
+
+                // Comment placeholder
+                if (key && body[i] === '\x00' && body.slice(i, i + key.length) === key) {
+                    const end = body.indexOf('\x00', i + key.length);
+                    if (end !== -1) {
+                        if (cur.trim()) { decls.push(cur.trim()); cur = ''; }
+                        decls.push(body.slice(i, end + 1));
+                        i = end + 1;
                         continue;
                     }
                 }
-                
+
                 if (body[i] === ';') {
-                    if (cur.trim()) {
-                        decls.push(cur.trim());
-                        cur = '';
-                    }
+                    if (cur.trim()) { decls.push(cur.trim()); cur = ''; }
                     i++;
                     continue;
                 }
-                
-                if (body[i] === '(' && !isInsideString(body, i)) {
+
+                // Parentheses (e.g. calc(), var(), rgba()) — consume whole group
+                if (body[i] === '(' && !sm[i]) {
                     cur += body[i];
                     i++;
                     let depth = 1;
                     while (i < len && depth > 0) {
-                        if (body[i] === '(' && !isInsideString(body, i)) depth++;
-                        else if (body[i] === ')' && !isInsideString(body, i)) depth--;
+                        if (!sm[i]) {
+                            if (body[i] === '(') depth++;
+                            else if (body[i] === ')') depth--;
+                        }
                         cur += body[i];
                         i++;
                     }
                     continue;
                 }
-                
+
                 cur += body[i];
                 i++;
             }
-            
             if (cur.trim()) decls.push(cur.trim());
             return decls.filter(d => d.length > 0);
         }
@@ -633,15 +1010,12 @@
             const lines = [];
             let cur = '';
             const baseIndent = makeIndent(indentLevel, indentSize);
-            
-            for (let i = 0; i < decls.length; i++) {
-                let part = decls[i];
+            for (const part of decls) {
                 if (!part) continue;
-                
                 if (cur === '') {
                     cur = part;
                 } else if ((baseIndent + cur + ' ' + part).length <= bp) {
-                    cur = cur + ' ' + part;
+                    cur += ' ' + part;
                 } else {
                     lines.push(cur);
                     cur = part;
@@ -651,140 +1025,194 @@
             return lines.map(l => baseIndent + l);
         }
 
-        function parseDeclaration(decl) {
-            // Check if this is a comment placeholder
-            if (decl.startsWith('__COMMENT_')) {
+        function parseDeclaration(decl, key) {
+            // Comment placeholder passthrough
+            if (key && decl[0] === '\x00' && decl.startsWith(key)) {
                 return { type: 'comment', placeholder: decl };
             }
-            
+
             const colonIndex = decl.indexOf(':');
             if (colonIndex === -1) return null;
-            
+
             const prop = decl.slice(0, colonIndex).trim();
             let value = decl.slice(colonIndex + 1).trim();
-            
-            if (value.endsWith(';')) {
-                value = value.slice(0, -1).trim();
-            }
-            
+            if (value.endsWith(';')) value = value.slice(0, -1).trim();
+
+            // Sanity check: prop should be a valid identifier (or custom property)
+            if (!prop || !/^-?-?[a-zA-Z_][\w-]*$/.test(prop.replace(/^--/, ''))) return null;
+
             return { type: 'declaration', prop, value };
         }
 
         function processDeclaration(parsed, options) {
-            if (!parsed) return null;
-            
-            // Pass through comments unchanged
-            if (parsed.type === 'comment') {
-                return parsed;
-            }
-            
+            if (!parsed || parsed.type === 'comment') return parsed;
+
             let { prop, value } = parsed;
-            
+
             if (options.optimizeColors) {
-                value = value.replace(/(#[0-9a-f]{3,6}|rgba?\([^)]+\))/gi, match => optimizeColor(match));
+                value = value.replace(/(rgba?\s*\([^)]+\)|#[0-9a-fA-F]{3,8})/gi, match => optimizeColor(match));
             }
-            
             if (options.optimizeValues) {
-                value = optimizeValue(value);
+                value = optimizeValue(prop, value);
             }
-            
+
             return { type: 'declaration', prop, value };
         }
 
-        function formatTokens(tokens, mode, opts, level = 0) {
+        // ===== Format Keyframes Block =====
+        function formatKeyframes(token, mode, opts, level) {
+            const indentSize = Number(opts.indent) || 2;
+            const ind0 = makeIndent(level, indentSize);
+            const ind1 = makeIndent(level + 1, indentSize);
+            const ind2 = makeIndent(level + 2, indentSize);
+            const header = token.header.replace(/\s+/g, ' ');
+
+            // Parse keyframe stops (e.g. "from", "to", "0%", "50%, 100%")
+            const body = token.body;
+            // Split stops by finding top-level { } pairs
+            const stops = [];
+            let i = 0;
+            const len = body.length;
+            while (i < len) {
+                while (i < len && /\s/.test(body[i])) i++;
+                const selStart = i;
+                while (i < len && body[i] !== '{') i++;
+                if (i >= len) break;
+                const stopSel = body.slice(selStart, i).trim();
+                i++;
+                let depth = 1;
+                const bodyStart = i;
+                while (i < len && depth > 0) {
+                    if (body[i] === '{') depth++;
+                    else if (body[i] === '}') depth--;
+                    i++;
+                }
+                const stopBody = body.slice(bodyStart, i - 1).trim();
+                if (stopSel) stops.push({ sel: stopSel, body: stopBody });
+            }
+
+            if (mode === 'highest') {
+                const inner = stops.map(s => {
+                    const decls = s.body.split(';').map(d => d.trim()).filter(Boolean);
+                    return s.sel + '{' + decls.join(';') + '}';
+                }).join('');
+                return header + '{' + inner + '}';
+            } else if (mode === 'high') {
+                const inner = stops.map(s => {
+                    const decls = s.body.split(';').map(d => d.trim()).filter(Boolean);
+                    return ind1 + s.sel + ' { ' + decls.join('; ') + (decls.length ? ';' : '') + ' }';
+                }).join('\n');
+                return ind0 + header + ' {\n' + inner + '\n' + ind0 + '}';
+            } else {
+                const inner = stops.map(s => {
+                    const decls = s.body.split(';').map(d => d.trim()).filter(Boolean);
+                    const declLines = decls.map(d => ind2 + d + ';').join('\n');
+                    return ind1 + s.sel + ' {\n' + declLines + '\n' + ind1 + '}';
+                }).join('\n');
+                return ind0 + header + ' {\n' + inner + '\n' + ind0 + '}';
+            }
+        }
+
+        // ===== Main Formatter =====
+        function formatTokens(tokens, mode, opts, key, level = 0) {
             const indentSize = Number(opts.indent) || 2;
             const bp = Number(opts.breakpoint) || 80;
             const soft = !!opts.soft;
             const out = [];
-            
+
             for (const t of tokens) {
-                // Handle comment tokens
-                if (t.type === 'comment') {
-                    if (mode === 'highest') {
-                        // In minified mode, skip comments on their own line
-                        continue;
-                    } else {
-                        out.push(makeIndent(level, indentSize) + t.placeholder);
+                try {
+                    if (t.type === 'comment') {
+                        if (mode !== 'highest') {
+                            out.push(makeIndent(level, indentSize) + t.placeholder);
+                        }
                         continue;
                     }
-                }
-                
-                if (t.type === 'atRule') {
-                    out.push(t.header);
-                    continue;
-                }
-                
-                if (t.type === 'atBlock') {
-                    const innerTokens = tokenize(t.body);
-                    
+
+                    if (t.type === 'atRule') {
+                        out.push(makeIndent(level, indentSize) + t.header);
+                        continue;
+                    }
+
+                    // @keyframes — special handling
+                    if (t.type === 'keyframes') {
+                        out.push(formatKeyframes(t, mode, opts, level));
+                        continue;
+                    }
+
+                    if (t.type === 'atBlock') {
+                        // Recursively format inner tokens (supports @layer, @media, @supports, @container)
+                        const innerTokens = tokenize(t.body, key);
+                        const ind = makeIndent(level, indentSize);
+
+                        if (mode === 'highest') {
+                            const inner = formatTokens(innerTokens, mode, opts, key, level + 1).join('');
+                            const header = t.header.replace(/\s+/g, ' ');
+                            out.push(header + '{' + inner + '}');
+                        } else if (mode === 'high') {
+                            const header = t.header.replace(/\s+/g, ' ');
+                            const inner = formatTokens(innerTokens, mode, opts, key, level + 1).join('\n');
+                            out.push(ind + header + ' {\n' + inner + '\n' + ind + '}');
+                        } else {
+                            const inner = formatTokens(innerTokens, mode, opts, key, level + 1).join('\n');
+                            out.push(ind + t.header + ' {\n' + inner + '\n' + ind + '}');
+                        }
+                        continue;
+                    }
+
+                    // Standard rule
+                    const selector = mode === 'highest'
+                        ? t.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').replace(/\s*>\s*/g, '>').replace(/\s*\+\s*/g, '+').replace(/\s*~\s*/g, '~').trim()
+                        : t.selector.replace(/\s+/g, ' ').trim();
+
+                    let decls = splitDeclarations(t.body, key);
+                    let parsed = decls.map(d => parseDeclaration(d, key)).filter(Boolean);
+                    parsed = parsed.map(p => processDeclaration(p, opts)).filter(Boolean);
+
+                    if (opts.sortProps) parsed = sortProperties(parsed);
+
+                    const comments = parsed.filter(p => p.type === 'comment');
+                    const declarations = parsed.filter(p => p.type === 'declaration');
+                    const formatted = declarations.map(p => p.prop + ': ' + p.value);
+                    const ind = makeIndent(level, indentSize);
+
                     if (mode === 'highest') {
-                        const inner = formatTokens(innerTokens, mode, opts, level + 1).join('');
-                        const header = t.header.replace(/\s+/g, ' ');
-                        out.push(header + '{' + inner + '}');
+                        // FIX: No trailing semicolon before closing brace
+                        const compacted = formatted.map(f => f.replace(/\s*:\s*/g, ':'));
+                        out.push(selector + '{' + compacted.join(';') + '}');
                     } else if (mode === 'high') {
-                        const header = t.header.replace(/\s+/g, ' ');
-                        const inner = formatTokens(innerTokens, mode, opts, level + 1).join('\n');
-                        out.push(header + ' {\n' + inner + '\n' + makeIndent(level, indentSize) + '}');
+                        comments.forEach(c => out.push(ind + c.placeholder));
+                        const joined = formatted.join('; ') + (formatted.length > 0 ? ';' : '');
+                        out.push(ind + selector + ' { ' + joined + ' }');
+                    } else if (mode === 'standard') {
+                        const withSemi = formatted.map(f => f + ';');
+                        const line = ind + selector + ' { ' + withSemi.join(' ') + ' }';
+                        if (soft && line.length > bp) {
+                            comments.forEach(c => out.push(ind + c.placeholder));
+                            const wrapped = softWrapDecls(withSemi, bp, level + 1, indentSize);
+                            out.push(ind + selector + ' {');
+                            out.push(...wrapped);
+                            out.push(ind + '}');
+                        } else {
+                            comments.forEach(c => out.push(ind + c.placeholder));
+                            out.push(line);
+                        }
                     } else {
-                        const inner = formatTokens(innerTokens, mode, opts, level + 1).join('\n');
-                        out.push(t.header + ' {\n' + inner + '\n' + makeIndent(level, indentSize) + '}');
+                        comments.forEach(c => out.push(ind + c.placeholder));
+                        out.push(ind + selector + ' {');
+                        for (const f of formatted) {
+                            out.push(makeIndent(level + 1, indentSize) + f + ';');
+                        }
+                        out.push(ind + '}');
                     }
-                    continue;
-                }
-                
-                const selector = mode === 'highest' 
-                    ? t.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').replace(/\s*>\s*/g, '>').replace(/\s*\+\s*/g, '+').replace(/\s*~\s*/g, '~').trim()
-                    : t.selector.replace(/\s+/g, ' ').trim();
-                
-                let decls = splitDeclarations(t.body);
-                let parsed = decls.map(d => parseDeclaration(d)).filter(p => p !== null);
-                parsed = parsed.map(p => processDeclaration(p, opts)).filter(p => p !== null);
-                
-                if (opts.sortProps) {
-                    parsed = sortProperties(parsed);
-                }
-                
-                // Separate comments and declarations for formatting
-                const comments = parsed.filter(p => p.type === 'comment');
-                const declarations = parsed.filter(p => p.type === 'declaration');
-                const formatted = declarations.map(p => p.prop + ': ' + p.value);
-                
-                if (mode === 'highest') {
-                    const compacted = formatted.map(f => f.replace(/\s*:\s*/g, ':').replace(/\s+/g, ' '));
-                    const one = selector + '{' + compacted.join(';') + (compacted.length > 0 ? ';' : '') + '}';
-                    out.push(one);
-                } else if (mode === 'high') {
-                    // Output any comments first
-                    comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
-                    
-                    const joined = formatted.join('; ') + (formatted.length > 0 ? ';' : '');
-                    out.push(makeIndent(level, indentSize) + selector + ' { ' + joined + ' }');
-                } else if (mode === 'standard') {
-                    const withSemi = formatted.map(f => f + ';');
-                    const line = makeIndent(level, indentSize) + selector + ' { ' + withSemi.join(' ') + ' }';
-                    
-                    if (soft && line.length > bp) {
-                        // Output any comments first
-                        comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
-                        
-                        const wrapped = softWrapDecls(withSemi, bp, level + 1, indentSize);
-                        out.push(makeIndent(level, indentSize) + selector + ' {');
-                        out.push(...wrapped);
-                        out.push(makeIndent(level, indentSize) + '}');
-                    } else {
-                        // Output any comments first
-                        comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
-                        out.push(line);
-                    }
-                } else {
-                    // Output any comments first
-                    comments.forEach(c => out.push(makeIndent(level, indentSize) + c.placeholder));
-                    
-                    out.push(makeIndent(level, indentSize) + selector + ' {');
-                    for (const f of formatted) {
-                        out.push(makeIndent(level + 1, indentSize) + f + ';');
-                    }
-                    out.push(makeIndent(level, indentSize) + '}');
+
+                } catch (tokenErr) {
+                    // ===== Per-rule Error Recovery =====
+                    // If a single token fails to format, pass it through as a comment so output
+                    // is still valid CSS and the user can identify the problem.
+                    state.recoveredCount++;
+                    const raw = t.body ? (t.selector || t.header || '') + ' { ' + t.body + ' }' : (t.header || String(t));
+                    out.push('/* [RECOVERY ERROR: ' + (tokenErr.message || tokenErr) + '] */ ' + raw);
                 }
             }
             return out;
@@ -792,26 +1220,23 @@
 
         function validateCSS(css) {
             const warnings = [];
-            
+            const sm = buildStringMap(css);
+
             let braceCount = 0;
             for (let i = 0; i < css.length; i++) {
-                if (!isInsideString(css, i)) {
+                if (!sm[i]) {
                     if (css[i] === '{') braceCount++;
                     else if (css[i] === '}') braceCount--;
                 }
             }
-            if (braceCount !== 0) {
-                warnings.push('Unmatched braces detected');
-            }
-            
-            if (/:\s*;/.test(css)) {
-                warnings.push('Empty property values detected');
-            }
-            
+            if (braceCount !== 0) warnings.push('Unmatched braces detected (count: ' + braceCount + ')');
+            if (/:\s*;/.test(css)) warnings.push('Empty property values detected');
+            if (/@import\s/.test(css) && !/^@import/.test(css.trim())) warnings.push('@import rules should appear before other rules');
+
             return warnings;
         }
 
-        function compress() {
+        async function compress() {
             const raw = el('inputCss').value;
             const mode = el('mode').value;
             const indent = Number(el('indent').value) || 2;
@@ -821,13 +1246,15 @@
             const optimizeValues = el('optimizeValues').checked;
             const sortProps = el('sortProps').checked;
             const preserveComments = el('preserveComments').checked;
-            
+
             if (!raw.trim()) {
                 el('outputCss').value = '';
                 el('size').textContent = '0';
+                el('gzipSize').textContent = '0';
                 el('lines').textContent = '0';
                 el('saved').textContent = '0';
                 el('errorDisplay').classList.remove('show');
+                el('warningDisplay').classList.remove('show');
                 return;
             }
 
@@ -836,52 +1263,71 @@
                 state.processingLargeFile = true;
             }
 
-            const process = () => {
+            const process = async () => {
                 try {
+                    state.recoveredCount = 0;
                     let css = raw.replace(/\r\n/g, '\n');
-                    
+
                     const warnings = validateCSS(css);
                     if (warnings.length > 0) {
                         el('warningPill').style.display = 'inline-block';
                         el('warningPill').classList.add('warning');
                         el('warnings').textContent = warnings.length;
-                        el('errorDisplay').textContent = '⚠️ ' + warnings.join(', ');
-                        el('errorDisplay').classList.add('show');
+                        el('warningDisplay').textContent = '⚠️ ' + warnings.join(' · ');
+                        el('warningDisplay').classList.add('show');
                     } else {
                         el('warningPill').style.display = 'none';
-                        el('errorDisplay').classList.remove('show');
+                        el('warningDisplay').classList.remove('show');
                     }
-                    
-                    // Replace comments with placeholders
-                    const { css: processedCss, commentStore } = replaceCommentsWithPlaceholders(css, preserveComments);
-                    
-                    const tokens = tokenize(processedCss);
-                    
+
+                    // Replace comments with collision-safe placeholders
+                    const { css: processedCss, commentStore, key } = replaceCommentsWithPlaceholders(css, preserveComments);
+
+                    const tokens = tokenize(processedCss, key);
                     const options = { indent, breakpoint, soft, optimizeColors, optimizeValues, sortProps, preserveComments };
-                    let out = formatTokens(tokens, mode, options, 0).join('\n');
-                    
+                    let out = formatTokens(tokens, mode, options, key, 0).join('\n');
+
                     if (mode === 'highest') {
                         out = out.replace(/\n+/g, '');
                     }
-                    
+
                     // Restore comments from placeholders
                     out = restoreComments(out, commentStore);
 
                     el('outputCss').value = out;
+
                     const outputSize = new Blob([out]).size;
+                    const originalSize = new Blob([raw]).size;
                     el('size').textContent = outputSize;
                     el('lines').textContent = out.split('\n').length;
-                    const originalSize = new Blob([raw]).size;
+
                     const saved = originalSize > 0 ? Math.round((1 - (outputSize / originalSize)) * 100) : 0;
                     el('saved').textContent = saved;
-                    
+
                     const savedPill = el('savedPill');
                     savedPill.classList.remove('success', 'warning', 'error');
                     if (saved > 30) savedPill.classList.add('success');
                     else if (saved > 10) savedPill.classList.add('warning');
-                    
+
+                    // Gzip size estimate (async — update after render)
+                    estimateGzipSize(out).then(gz => {
+                        el('gzipSize').textContent = gz;
+                    });
+
+                    // Show recovered count if any
+                    if (state.recoveredCount > 0) {
+                        el('recoveredPill').style.display = 'inline-block';
+                        el('recoveredPill').classList.add('warning');
+                        el('recovered').textContent = state.recoveredCount;
+                    } else {
+                        el('recoveredPill').style.display = 'none';
+                    }
+
+                    el('errorDisplay').classList.remove('show');
+
                 } catch (e) {
-                    el('outputCss').value = '/* Error formatting CSS: ' + (e && e.message ? e.message : String(e)) + ' */\n' + raw;
+                    // Top-level catch: show error but also show raw CSS so user isn't left with nothing
+                    el('outputCss').value = '/* Fatal error formatting CSS: ' + (e && e.message ? e.message : String(e)) + ' */\n' + raw;
                     el('errorDisplay').textContent = '❌ ' + (e && e.message ? e.message : String(e));
                     el('errorDisplay').classList.add('show');
                 } finally {
@@ -893,14 +1339,13 @@
             if (state.processingLargeFile) {
                 setTimeout(process, 50);
             } else {
-                process();
+                await process();
             }
         }
 
         function applyPreset(presetName) {
             const preset = CONFIG.presets[presetName];
             if (!preset) return;
-            
             el('mode').value = preset.mode;
             el('indent').value = preset.indent;
             el('breakpoint').value = preset.breakpoint;
@@ -908,20 +1353,15 @@
             el('optimizeColors').checked = preset.optimizeColors;
             el('optimizeValues').checked = preset.optimizeValues;
             el('sortProps').checked = preset.sortProps;
-            
             state.currentPreset = presetName;
             updatePresetButtons();
             compress();
         }
 
         function updatePresetButtons() {
-            ['presetMinify', 'presetCompact', 'presetStandard', 'presetReadable'].forEach(id => {
-                el(id).classList.remove('active');
-            });
-            const presetMap = { minify: 'presetMinify', compact: 'presetCompact', standard: 'presetStandard', readable: 'presetReadable' };
-            if (presetMap[state.currentPreset]) {
-                el(presetMap[state.currentPreset]).classList.add('active');
-            }
+            ['presetMinify', 'presetCompact', 'presetStandard', 'presetReadable'].forEach(id => el(id).classList.remove('active'));
+            const map = { minify: 'presetMinify', compact: 'presetCompact', standard: 'presetStandard', readable: 'presetReadable' };
+            if (map[state.currentPreset]) el(map[state.currentPreset]).classList.add('active');
         }
 
         async function pasteFromClipboard() {
@@ -929,23 +1369,18 @@
             if (!ta) return;
             try {
                 const text = await navigator.clipboard.readText();
-                if (text == null) {
-                    alert('Clipboard is empty or does not contain text.');
-                    return;
-                }
+                if (text == null) { alert('Clipboard is empty or does not contain text.'); return; }
                 ta.value = text;
                 saveToHistory(text);
                 ta.selectionStart = ta.selectionEnd = ta.value.length;
                 ta.focus();
-                if (el('autoCompress').checked) {
-                    compress();
-                }
+                if (el('autoCompress').checked) compress();
             } catch (err) {
                 console.error('Failed to read clipboard:', err);
                 alert('Unable to read clipboard. Check permissions or use Ctrl+V.');
             }
         }
-        
+
         async function copyToClipboard() {
             const btn = el('copyBtn');
             const text = el('outputCss').value;
@@ -961,53 +1396,6 @@
             }
         }
 
-        let debounceTimer;
-        el('inputCss').addEventListener('input', (e) => {
-            const value = e.target.value;
-            
-            if (Math.abs(value.length - (state.history[state.historyIndex] || '').length) > 10) {
-                saveToHistory(value);
-            }
-            
-            if (el('autoCompress').checked) {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(compress, CONFIG.debounceDelay);
-            }
-        });
-
-        el('inputCss').addEventListener('keydown', e => {
-            if (e.ctrlKey && e.key === 'Enter') {
-                e.preventDefault();
-                compress();
-            }
-            if (e.ctrlKey && e.key === 'z') {
-                e.preventDefault();
-                undo();
-            }
-            if (e.ctrlKey && e.key === 'y') {
-                e.preventDefault();
-                redo();
-            }
-        });
-
-        el('outputCss').addEventListener('keydown', e => {
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                downloadCSS();
-            }
-        });
-
-        el('compressBtn').addEventListener('click', compress);
-        el('clearBtn').addEventListener('click', () => {
-            el('inputCss').value = '';
-            el('outputCss').value = '';
-            el('size').textContent = '0';
-            el('lines').textContent = '0';
-            el('saved').textContent = '0';
-            el('errorDisplay').classList.remove('show');
-            saveToHistory('');
-        });
-
         function downloadCSS() {
             const blob = new Blob([el('outputCss').value], { type: 'text/css' });
             const url = URL.createObjectURL(blob);
@@ -1019,6 +1407,49 @@
             a.remove();
             URL.revokeObjectURL(url);
         }
+
+        // ===== History: save on word boundaries (blur or pause) =====
+        let debounceTimer;
+        let historyTimer;
+        el('inputCss').addEventListener('input', (e) => {
+            const value = e.target.value;
+
+            // Save to history on word boundary or large change
+            clearTimeout(historyTimer);
+            historyTimer = setTimeout(() => saveToHistory(value), 800);
+
+            if (el('autoCompress').checked) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(compress, CONFIG.debounceDelay);
+            }
+        });
+
+        el('inputCss').addEventListener('blur', (e) => {
+            saveToHistory(e.target.value);
+        });
+
+        el('inputCss').addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); compress(); }
+            if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+            if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
+        });
+
+        el('outputCss').addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 's') { e.preventDefault(); downloadCSS(); }
+        });
+
+        el('compressBtn').addEventListener('click', compress);
+        el('clearBtn').addEventListener('click', () => {
+            el('inputCss').value = '';
+            el('outputCss').value = '';
+            el('size').textContent = '0';
+            el('gzipSize').textContent = '0';
+            el('lines').textContent = '0';
+            el('saved').textContent = '0';
+            el('errorDisplay').classList.remove('show');
+            el('warningDisplay').classList.remove('show');
+            saveToHistory('');
+        });
 
         el('downloadBtn').addEventListener('click', downloadCSS);
         el('copyBtn').addEventListener('click', copyToClipboard);
@@ -1034,9 +1465,7 @@
             el(id).addEventListener('change', () => {
                 state.currentPreset = null;
                 updatePresetButtons();
-                if (el('autoCompress').checked) {
-                    compress();
-                }
+                if (el('autoCompress').checked) compress();
             });
         });
 
@@ -1046,4 +1475,5 @@
         updatePresetButtons();
     </script>
 </body>
+
 </html>
